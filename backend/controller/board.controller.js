@@ -5,7 +5,10 @@ const ListModel = require('../model/list.schema');
 // Create a new board
 exports.createBoard = async (req, res) => {
     try {
-        const { title, userId } = req.body;
+        const { title, } = req.body;
+        const { id: userId } = req.user;
+
+        // console.log("userId: ", userId)
 
         if (!title) {
             return res.status(400).json({ message: 'Board title is required' });

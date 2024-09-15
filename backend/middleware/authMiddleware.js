@@ -10,6 +10,7 @@ const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Assuming token is sent as 'Bearer TOKEN'
 
+    console.log("authHeader: ", authHeader)
     // If no token is found, return an error
     if (!token) {
         return res.status(401).json({ message: 'Access denied. No token provided.' });
