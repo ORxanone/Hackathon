@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { BoardHeader } from "./BoardHeader";
-
 import {
   Box,
   Button,
@@ -123,6 +122,9 @@ export const Board = () => {
     if (!newCardText) {
       toast({
         title: "no name",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
       });
       return;
     }
@@ -141,6 +143,9 @@ export const Board = () => {
     if (!newColumnName) {
       toast({
         title: "no name",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
       });
       return;
     }
@@ -159,7 +164,6 @@ export const Board = () => {
 
   return (
     <Container maxW="1400px">
-      <BoardHeader />
       <Box as="main">
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable
@@ -186,7 +190,11 @@ export const Board = () => {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        {...boardColumnStyle}
+                        bg="#3b444b"
+                        p={4}
+                        borderRadius="md"
+                        shadow="md"
+                        minWidth={minColumnWidth}
                       >
                         <Editable
                           defaultValue={columnKey}
@@ -199,6 +207,8 @@ export const Board = () => {
                             });
                           }}
                           {...editableStyle}
+                          bg="#3b444b"
+                          color="white"
                         >
                           <EditablePreview />
                           <EditableInput />
@@ -222,7 +232,13 @@ export const Board = () => {
                                       ref={provided.innerRef}
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
-                                      {...boardCardStyle}
+                                      bg="teal.600"
+                                      p={4}
+                                      borderRadius="md"
+                                      color="white"
+                                      _hover={{
+                                        bg: "teal.500",
+                                      }}
                                       onDoubleClick={() => handleCardEdit(task)}
                                     >
                                       <Heading as="h4" fontSize={16}>
@@ -260,7 +276,7 @@ export const Board = () => {
                                   />
                                   <HStack>
                                     <Button
-                                      colorScheme="green"
+                                      colorScheme="blue"
                                       onClick={() => addNewCard(columnKey)}
                                     >
                                       <Check />
@@ -279,7 +295,7 @@ export const Board = () => {
                               )}
                               {newCardColumn !== columnKey && (
                                 <Button
-                                  colorScheme="green"
+                                  colorScheme="blue"
                                   onClick={() => {
                                     setNewCardText("");
                                     setNewCardColumn(columnKey);
@@ -305,9 +321,11 @@ export const Board = () => {
                         placeholder="Enter column name"
                         value={newColumnName}
                         onChange={(e) => setNewColumnName(e.target.value)}
+                        bg="#3b444b"
+                        color="white"
                       />
                       <HStack mt={2} minWidth={minColumnWidth}>
-                        <Button colorScheme="green" onClick={handleAddColumn}>
+                        <Button colorScheme="blue" onClick={handleAddColumn}>
                           <Check />
                         </Button>
                         <Button
@@ -320,11 +338,12 @@ export const Board = () => {
                     </Flex>
                   ) : (
                     <Button
-                      mt={4}
                       onClick={() => setAddingNewColumn(true)}
+                      colorScheme="blue"
                       minWidth={minColumnWidth}
                     >
-                      Add another list
+                      <Plus />
+                      <Text>Add Column</Text>
                     </Button>
                   )}
                 </Box>
@@ -333,18 +352,47 @@ export const Board = () => {
           </Droppable>
         </DragDropContext>
       </Box>
+
+      {/* Modal for editing card */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{selectedEditCard?.title}</ModalHeader>
+        <ModalContent bg="#3b444b" color="white">
+          <ModalHeader>Edit Card</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>asd</ModalBody>
+          <ModalBody>
+            {/* Editable fields for card */}
+            <Input
+              placeholder="Card Title"
+              value={selectedEditCard?.title || ""}
+              onChange={(e) => {
+                const newValue = e.target.value;
+                setBoardData((draft) => {
+                  draft[columnOrder].map((card) => {
+                    if (card.id === selectedEditCard.id) {
+                      card.title = newValue;
+                    }
+                  });
+                });
+              }}
+            />
+            {/* Other fields can be added here */}
+          </ModalBody>
 
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
+              Save
             </Button>
-            <Button variant="ghost">Secondary Action</Button>
+            <Button
+              bg="gray.100"
+              color="black"
+              _hover={{
+                bg: "gray.300",
+                color: "black",
+              }}
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
