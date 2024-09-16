@@ -37,6 +37,7 @@ const Header = () => {
   const handleLogout = () => {
     // Add your logout logic here, e.g., clearing tokens, etc.
     // Then navigate to the home page
+    localStorage.removeItem("authToken");
     navigate("/");
   };
 
