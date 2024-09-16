@@ -1,5 +1,5 @@
 // controllers/authController.js
-const User = require('../models/user');
+const User = require('../model/user.schema');
 const jwt = require('jsonwebtoken');
 
 // Register a new user
