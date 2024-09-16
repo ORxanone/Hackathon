@@ -14,8 +14,7 @@ export const login = async (body) => {
 export const createBoard = async (title) => {
   const token = localStorage.getItem("authToken");
 
-  // const url = `${BASE_URL}/boards`;
-  const url = `http://localhost:8080/boards`;
+  const url = `${BASE_URL}/boards`;
 
   return await axios.post(
     url,
@@ -31,8 +30,7 @@ export const createBoard = async (title) => {
 export const getBoards = async () => {
   const token = localStorage.getItem("authToken");
 
-  // const url = `${BASE_URL}/boards`;
-  const url = `http://localhost:8080/boards`;
+  const url = `${BASE_URL}/boards`;
 
   console.log("token", token);
   return axios.get(url, {
