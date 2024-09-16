@@ -7,7 +7,6 @@ router.post('/invite', async (req, res, next) => {
 
     try {
 
-        console.log("req.body: ", req.body)
         const inviteLink = `${process.env.APP_URL}/invite?boardId=${boardId}`;
 
         await sendInviteEmail(email, inviteLink);

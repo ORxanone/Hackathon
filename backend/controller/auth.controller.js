@@ -2,6 +2,7 @@
 const User = require("../model/user.schema");
 const jwt = require("jsonwebtoken");
 
+
 // Register a new user
 exports.register = async (req, res) => {
   try {
@@ -39,6 +40,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, "your_jwt_secret", {
       expiresIn: "5m",
     });
+
 
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
