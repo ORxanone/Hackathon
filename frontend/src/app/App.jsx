@@ -1,7 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
-import { PrivateRoute } from "./PrivateRoute"; // Import the PrivateRoute component
-import { NotFound } from "../pages/NotFound"; // Import the NotFound component
+import { NotFound } from "../pages/NotFound";
 import { Boards } from "../pages/Boards/Boards";
 import { Login } from "../pages/Login/Login";
 import { Register } from "../pages/Register/Register";
@@ -9,41 +8,37 @@ import { Home } from "../pages/Home/Home";
 import { Dashboard } from "../pages/Dashboard/Dashboard";
 import { Templates } from "../pages/Templates/Templates";
 import { Board } from "../pages/board/Board";
-import { LoadingSpinner } from "../components/LoadingSpinner";
-import { Suspense } from "react";
+import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PublicRoute";
 
-const wrapWithSuspense = (element, isPrivate = false) => {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      {isPrivate ? <PrivateRoute>{element}</PrivateRoute> : element}
-    </Suspense>
-  );
-};
+// const token = localStorage.getItem("authToken");
+
+// const wrapWithSuspense = (element, isPrivate = false) => {
+//   return isPrivate ? <Navigate to="/login" replace /> : element;
+// };
 
 function App() {
   return (
     <ChakraProvider>
       <Routes>
-        <Route path="/" element={wrapWithSuspense(<Home />, true)} />
-        <Route path="/login" element={wrapWithSuspense(<Login />, true)} />
-        <Route
-          path="/register"
-          element={wrapWithSuspense(<Register />, true)}
-        />
-        <Route path="/b/:id" element={wrapWithSuspense(<Board />)} />
-        <Route path="/dashboard" element={wrapWithSuspense(<Dashboard />)}>
+        <Route path="/b/:id" element={<PrivateRoute element={Board} />} />
+        <Route path="/dashboard" element={<PrivateRoute element={Dashboard} />}>
           <Route
             path="/dashboard/boards"
-            element={wrapWithSuspense(<Boards />)}
+            element={<PrivateRoute element={Boards} />}
           />
           <Route
             path="/dashboard/templates"
-            element={wrapWithSuspense(<Templates />)}
+            element={<PrivateRoute element={Templates} />}
           />
-          {/* Nested Boards route */}
         </Route>
+
+        <Route path="/" element={<PublicRoute element={Home} />} />
+        <Route path="/register" element={<PublicRoute element={Register} />} />
+        <Route path="/login" element={<PublicRoute element={Login} />} />
+
         {/* Catch-all route for undefined paths */}
-        <Route path="*" element={wrapWithSuspense(<NotFound />)} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </ChakraProvider>
   );

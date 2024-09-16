@@ -42,29 +42,29 @@ export const Board = () => {
 
   const [boardData, setBoardData] = useMutative({
     todos: [
-      {
-        id: "231245",
-        title: "schedule",
-        description: "adasd",
-        deadline: "03.03",
-        members: ["43"],
-      },
+      // {
+      //   id: "231245",
+      //   title: "schedule",
+      //   description: "adasd",
+      //   deadline: "03.03",
+      //   members: ["43"],
+      // },
     ],
     doing: [
-      {
-        id: "1244",
-        title: "schedule",
-        description: "adasd",
-        deadline: "03.03",
-        members: [],
-      },
-      {
-        id: "122444",
-        title: "sche24dule",
-        description: "adasd",
-        deadline: "03.03",
-        members: [],
-      },
+      // {
+      //   id: "1244",
+      //   title: "schedule",
+      //   description: "adasd",
+      //   deadline: "03.03",
+      //   members: [],
+      // },
+      // {
+      //   id: "122444",
+      //   title: "sche24dule",
+      //   description: "adasd",
+      //   deadline: "03.03",
+      //   members: [],
+      // },
     ],
     done: [],
   });
@@ -158,7 +158,7 @@ export const Board = () => {
   };
 
   return (
-    <Container maxW="1400px">
+    <Container maxW="1400px" marginInline={0}>
       <BoardHeader />
       <Box as="main">
         <DragDropContext onDragEnd={onDragEnd}>
