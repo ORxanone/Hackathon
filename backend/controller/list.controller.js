@@ -42,6 +42,7 @@ router.put('/list', async (req, res, next) => {
         await oldList.save();
 
         res.status(200).send({ message: "Succes Update List", oldList })
+
     } catch (error) {
         next(error)
     }

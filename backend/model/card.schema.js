@@ -26,10 +26,9 @@ const cardSchema = new mongoose.Schema({
         default: null
     },
     members: {
-        type: [mongoose.Schema.Types.ObjectId], // Correctly reference User IDs
-        ref: 'User', // This should be the name of the User model
-        default: undefined,
-
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "User",
+        default: undefined
     }
 },
     {
