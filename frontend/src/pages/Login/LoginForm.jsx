@@ -43,7 +43,7 @@ export const LoginForm = () => {
         });
         reset(); // Clear the form fields
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/dashboard/boards");
         }, 1500);
       } else {
         toast({

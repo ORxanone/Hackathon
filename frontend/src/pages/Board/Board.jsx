@@ -41,31 +41,8 @@ export const Board = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [boardData, setBoardData] = useMutative({
-    todos: [
-      // {
-      //   id: "231245",
-      //   title: "schedule",
-      //   description: "adasd",
-      //   deadline: "03.03",
-      //   members: ["43"],
-      // },
-    ],
-    doing: [
-      // {
-      //   id: "1244",
-      //   title: "schedule",
-      //   description: "adasd",
-      //   deadline: "03.03",
-      //   members: [],
-      // },
-      // {
-      //   id: "122444",
-      //   title: "sche24dule",
-      //   description: "adasd",
-      //   deadline: "03.03",
-      //   members: [],
-      // },
-    ],
+    todos: [],
+    doing: [],
     done: [],
   });
 
@@ -158,17 +135,19 @@ export const Board = () => {
   };
 
   return (
-    <Container maxW="1400px" marginInline={0}>
+    <Container maxW="1400px" marginInline={0} bg="#232b2b" minHeight="100vh">
       <BoardHeader />
-      <Box as="main">
+      <Box as="main" >
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable
             droppableId="all-columns"
             direction="horizontal"
             type="COLUMN"
+            
           >
             {(provided) => (
               <Flex
+              
                 ref={provided.innerRef}
                 {...provided.droppableProps}
                 gap={4}
@@ -177,6 +156,7 @@ export const Board = () => {
               >
                 {columnOrder.map((columnKey, index) => (
                   <Draggable
+                  
                     key={columnKey}
                     draggableId={columnKey}
                     index={index}
@@ -187,8 +167,11 @@ export const Board = () => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         {...boardColumnStyle}
+                        bg="#f8f9fa" // Yellow background for columns
+                       
                       >
                         <Editable
+                        
                           defaultValue={columnKey}
                           onSubmit={(value) => {
                             setBoardData((prev) => {
@@ -200,7 +183,7 @@ export const Board = () => {
                           }}
                           {...editableStyle}
                         >
-                          <EditablePreview />
+                          <EditablePreview  />
                           <EditableInput />
                         </Editable>
                         <Droppable droppableId={columnKey} type="TASK">
@@ -213,6 +196,7 @@ export const Board = () => {
                             >
                               {boardData[columnKey].map((task, index) => (
                                 <Draggable
+                                
                                   key={task.id}
                                   draggableId={task.id}
                                   index={index}
@@ -222,10 +206,14 @@ export const Board = () => {
                                       ref={provided.innerRef}
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
+                                       // Black card background
+                                      color="white" // Light text color
                                       {...boardCardStyle}
-                                      onDoubleClick={() => handleCardEdit(task)}
+                                      onDoubleClick={() =>
+                                        handleCardEdit(task)
+                                      }
                                     >
-                                      <Heading as="h4" fontSize={16}>
+                                      <Heading as="h4" fontSize={16} >
                                         {task.title}
                                       </Heading>
 
@@ -239,7 +227,9 @@ export const Board = () => {
                                           bg: "transparent",
                                           opacity: 1,
                                         }}
-                                        onClick={() => handleCardEdit(task)}
+                                        onClick={() =>
+                                          handleCardEdit(task)
+                                        }
                                       >
                                         <Pen color="white" />
                                       </Button>
@@ -260,7 +250,11 @@ export const Board = () => {
                                   />
                                   <HStack>
                                     <Button
-                                      colorScheme="green"
+                                      bg="#284b63" // Green button background
+                                      color="white" // Light text color
+                                      _hover={{
+                                        bg: "#3d6f8f", // Slightly lighter for hover
+                                      }}
                                       onClick={() => addNewCard(columnKey)}
                                     >
                                       <Check />
@@ -279,7 +273,11 @@ export const Board = () => {
                               )}
                               {newCardColumn !== columnKey && (
                                 <Button
-                                  colorScheme="green"
+                                  bg="#284b63" // Green button background
+                                  color="white" // Light text color
+                                  _hover={{
+                                    bg: "#3d6f8f", // Slightly lighter for hover
+                                  }}
                                   onClick={() => {
                                     setNewCardText("");
                                     setNewCardColumn(columnKey);
@@ -307,7 +305,14 @@ export const Board = () => {
                         onChange={(e) => setNewColumnName(e.target.value)}
                       />
                       <HStack mt={2} minWidth={minColumnWidth}>
-                        <Button colorScheme="green" onClick={handleAddColumn}>
+                        <Button
+                          bg="#284b63" // Green button background
+                          color="white" // Light text color
+                          _hover={{
+                            bg: "#3d6f8f", // Hover effect for green button
+                          }}
+                          onClick={handleAddColumn}
+                        >
                           <Check />
                         </Button>
                         <Button
@@ -320,7 +325,11 @@ export const Board = () => {
                     </Flex>
                   ) : (
                     <Button
-                      mt={4}
+                      bg="#284b63" // Green button background
+                      color="white" // Light text color
+                      _hover={{
+                        bg: "#3d6f8f", // Hover effect for green button
+                      }}
                       onClick={() => setAddingNewColumn(true)}
                       minWidth={minColumnWidth}
                     >
@@ -336,18 +345,48 @@ export const Board = () => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{selectedEditCard?.title}</ModalHeader>
+          <ModalHeader>Edit Card</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>asd</ModalBody>
-
+          <ModalBody>
+            <Input
+              placeholder="Edit card title"
+              value={selectedEditCard?.title || ""}
+              onChange={(e) =>
+                setSelectedEditCard({
+                  ...selectedEditCard,
+                  title: e.target.value,
+                })
+              }
+            />
+          </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
+            <Button
+              bg="#284b63"
+              color="white"
+              _hover={{ bg: "#3d6f8f" }}
+              onClick={() => {
+                setBoardData((draft) => {
+                  const newTasks = draft[
+                    columnOrder.find((column) =>
+                      draft[column].some(
+                        (task) => task.id === selectedEditCard.id
+                      )
+                    )
+                  ];
+                  const taskIndex = newTasks.findIndex(
+                    (task) => task.id === selectedEditCard.id
+                  );
+                  newTasks[taskIndex] = selectedEditCard;
+                });
+                onClose();
+              }}
+            >
+              Save
             </Button>
-            <Button variant="ghost">Secondary Action</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
     </Container>
   );
 };
+

@@ -11,6 +11,7 @@ import { Board } from "../pages/board/Board";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
+
 // const token = localStorage.getItem("authToken");
 
 // const wrapWithSuspense = (element, isPrivate = false) => {

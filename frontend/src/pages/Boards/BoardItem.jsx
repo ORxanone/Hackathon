@@ -7,14 +7,14 @@ const BoardItem = ({ data }) => {
   return (
     <Box
       as={Link}
-      bg="orange"
+      bg="white"
       p={4}
       borderRadius="md"
       boxShadow="md"
       to={`/b/${data?._id}`}
       transition="all 0.3s ease"
       _hover={{
-        bg: "orange.500", // Change background color on hover
+        bg: "#edede9", // Change background color on hover
         transform: "scale(1.05)", // Slightly increase size on hover
         boxShadow: "lg", // Increase shadow on hover
       }}
