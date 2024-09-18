@@ -2,11 +2,12 @@ export const minColumnWidth = "300px";
 
 export const editableStyle = {
   fontWeight: "bold",
-  color: "White",
+  color: "#343a40",
 };
 
 export const boardColumnStyle = {
-  bg: "orange",
+
+  bg:"#f8f9fa",
   borderRadius: 5,
   padding: 4,
   width: "400px",
@@ -28,6 +29,7 @@ export const boardCardStyle = {
 };
 
 export const addCardInputStyle = {
-  color: "white",
+  color: "#343a40",
+  bg: "#fff"
 };
 

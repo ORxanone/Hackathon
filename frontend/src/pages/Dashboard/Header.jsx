@@ -45,7 +45,7 @@ const Header = () => {
     <Box bg="#232b2b" color="white" p={4}>
       <Flex align="center">
         <Flex align="center" mr={4}>
-          <Link to="/dashboard">
+          <Link to="/dashboard/boards">
             <Flex align="center">
               <Box as="img" src={Trello} alt="Trello Logo" boxSize="30px" />
               <Text fontSize="2xl" ml={2}>

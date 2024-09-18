@@ -6,7 +6,7 @@ import Trello from "../../assets/trello.svg";
 export const BoardHeader = () => {
   return (
     <Box as="header" p="20px">
-      <Link to="/dashboard">
+      <Link to="/dashboard/boards">
         <Flex align="center">
           <Box as="img" src={Trello} alt="Trello Logo" boxSize="30px" />
           <Text fontSize="2xl" ml={2} color="white">

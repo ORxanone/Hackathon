@@ -11,7 +11,7 @@ const BoardItem = ({ data }) => {
       p={4}
       borderRadius="md"
       boxShadow="md"
-      to={`/b/${data?._id}`}
+      to={`/dashboard/boards/${data?._id}`}
       transition="all 0.3s ease"
       _hover={{
         bg: "#edede9", // Change background color on hover

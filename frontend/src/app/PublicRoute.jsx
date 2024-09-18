@@ -4,7 +4,7 @@ const PublicRoute = ({ element: Component }) => {
   const token = localStorage.getItem("authToken");
 
   if (token) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/dashboard/boards" replace />;
   }
 
   return <Component />;

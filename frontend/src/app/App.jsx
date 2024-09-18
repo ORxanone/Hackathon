@@ -22,7 +22,7 @@ function App() {
   return (
     <ChakraProvider>
       <Routes>
-        <Route path="/b/:id" element={<PrivateRoute element={Board} />} />
+        <Route path="/dashboard/boards/:id" element={<PrivateRoute element={Board} />} />
         <Route path="/dashboard" element={<PrivateRoute element={Dashboard} />}>
           <Route
             path="/dashboard/boards"

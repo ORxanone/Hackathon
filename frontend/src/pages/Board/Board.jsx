@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BoardHeader } from "./BoardHeader";
 
 import {
@@ -35,6 +35,7 @@ import {
   editableStyle,
   minColumnWidth,
 } from "../../assets/styles/chakraStyles";
+import { useParams } from "react-router-dom";
 
 export const Board = () => {
   const toast = useToast();
@@ -46,12 +47,49 @@ export const Board = () => {
     done: [],
   });
 
-  const [columnOrder, setColumnOrder] = useState(Object.keys(boardData));
+  const [columnOrder, setColumnOrder] = useState([]);
   const [newCardColumn, setNewCardColumn] = useState(null);
   const [newCardText, setNewCardText] = useState("");
   const [addingNewColumn, setAddingNewColumn] = useState(false);
   const [newColumnName, setNewColumnName] = useState("");
   const [selectedEditCard, setSelectedEditCard] = useState(null);
+  const { boardId } = useParams();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedBoardData = JSON.parse(localStorage.getItem("boardData"));
+      const savedColumnOrder = JSON.parse(localStorage.getItem("columnOrder"));
+
+      if (savedBoardData && savedColumnOrder) {
+        setBoardData(savedBoardData);
+        setColumnOrder(savedColumnOrder);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("boardData", JSON.stringify(boardData));
+      localStorage.setItem("columnOrder", JSON.stringify(columnOrder));
+    }
+  }, [boardData, columnOrder]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("boardData");
+    localStorage.removeItem("columnOrder");
+    setBoardData({
+      todos: [],
+      doing: [],
+      done: [],
+    });
+    setColumnOrder([]);
+    toast({
+      title: "Logged out successfully",
+      status: "info",
+      duration: 2000,
+      isClosable: true,
+    });
+  };
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
@@ -99,7 +137,10 @@ export const Board = () => {
   const addNewCard = (columnKey) => {
     if (!newCardText) {
       toast({
-        title: "no name",
+        title: "No name provided",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
       });
       return;
     }
@@ -117,7 +158,10 @@ export const Board = () => {
   const handleAddColumn = () => {
     if (!newColumnName) {
       toast({
-        title: "no name",
+        title: "No name provided",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
       });
       return;
     }
@@ -136,18 +180,17 @@ export const Board = () => {
 
   return (
     <Container maxW="1400px" marginInline={0} bg="#232b2b" minHeight="100vh">
-      <BoardHeader />
-      <Box as="main" >
+      <BoardHeader onLogout={handleLogout} />
+      <Box as="main">
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable
             droppableId="all-columns"
             direction="horizontal"
             type="COLUMN"
-            
           >
             {(provided) => (
               <Flex
-              
+                wrap="wrap"
                 ref={provided.innerRef}
                 {...provided.droppableProps}
                 gap={4}
@@ -156,22 +199,19 @@ export const Board = () => {
               >
                 {columnOrder.map((columnKey, index) => (
                   <Draggable
-                  
                     key={columnKey}
                     draggableId={columnKey}
                     index={index}
                   >
                     {(provided) => (
                       <Box
+                        flexBasis="23%"
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         {...boardColumnStyle}
-                        bg="#f8f9fa" // Yellow background for columns
-                       
                       >
                         <Editable
-                        
                           defaultValue={columnKey}
                           onSubmit={(value) => {
                             setBoardData((prev) => {
@@ -180,10 +220,13 @@ export const Board = () => {
                               delete newData[columnKey];
                               return newData;
                             });
+                            setColumnOrder((prev) => 
+                              prev.map((col) => (col === columnKey ? value : col))
+                            );
                           }}
                           {...editableStyle}
                         >
-                          <EditablePreview  />
+                          <EditablePreview />
                           <EditableInput />
                         </Editable>
                         <Droppable droppableId={columnKey} type="TASK">
@@ -196,7 +239,6 @@ export const Board = () => {
                             >
                               {boardData[columnKey].map((task, index) => (
                                 <Draggable
-                                
                                   key={task.id}
                                   draggableId={task.id}
                                   index={index}
@@ -206,14 +248,11 @@ export const Board = () => {
                                       ref={provided.innerRef}
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
-                                       // Black card background
-                                      color="white" // Light text color
+                                      color="white"
                                       {...boardCardStyle}
-                                      onDoubleClick={() =>
-                                        handleCardEdit(task)
-                                      }
+                                      onDoubleClick={() => handleCardEdit(task)}
                                     >
-                                      <Heading as="h4" fontSize={16} >
+                                      <Heading as="h4" fontSize={16}>
                                         {task.title}
                                       </Heading>
 
@@ -223,13 +262,8 @@ export const Board = () => {
                                         right={0}
                                         bg="transparent"
                                         opacity={0.3}
-                                        _hover={{
-                                          bg: "transparent",
-                                          opacity: 1,
-                                        }}
-                                        onClick={() =>
-                                          handleCardEdit(task)
-                                        }
+                                        _hover={{ bg: "transparent", opacity: 1 }}
+                                        onClick={() => handleCardEdit(task)}
                                       >
                                         <Pen color="white" />
                                       </Button>
@@ -244,17 +278,13 @@ export const Board = () => {
                                     {...addCardInputStyle}
                                     placeholder="Enter name for this card"
                                     value={newCardText}
-                                    onChange={(e) =>
-                                      setNewCardText(e.target.value)
-                                    }
+                                    onChange={(e) => setNewCardText(e.target.value)}
                                   />
                                   <HStack>
                                     <Button
-                                      bg="#284b63" // Green button background
-                                      color="white" // Light text color
-                                      _hover={{
-                                        bg: "#3d6f8f", // Slightly lighter for hover
-                                      }}
+                                      bg="#284b63"
+                                      color="white"
+                                      _hover={{ bg: "#3d6f8f" }}
                                       onClick={() => addNewCard(columnKey)}
                                     >
                                       <Check />
@@ -273,11 +303,9 @@ export const Board = () => {
                               )}
                               {newCardColumn !== columnKey && (
                                 <Button
-                                  bg="#284b63" // Green button background
-                                  color="white" // Light text color
-                                  _hover={{
-                                    bg: "#3d6f8f", // Slightly lighter for hover
-                                  }}
+                                  bg="#284b63"
+                                  color="white"
+                                  _hover={{ bg: "#3d6f8f" }}
                                   onClick={() => {
                                     setNewCardText("");
                                     setNewCardColumn(columnKey);
@@ -294,23 +322,21 @@ export const Board = () => {
                     )}
                   </Draggable>
                 ))}
-
                 {provided.placeholder}
                 <Box pr={5}>
                   {addingNewColumn ? (
-                    <Flex direction="column" mt={4}>
+                    <Flex direction="column">
                       <Input
+                        bg="#f8f9fa"
                         placeholder="Enter column name"
                         value={newColumnName}
                         onChange={(e) => setNewColumnName(e.target.value)}
                       />
                       <HStack mt={2} minWidth={minColumnWidth}>
                         <Button
-                          bg="#284b63" // Green button background
-                          color="white" // Light text color
-                          _hover={{
-                            bg: "#3d6f8f", // Hover effect for green button
-                          }}
+                          bg="#284b63"
+                          color="white"
+                          _hover={{ bg: "#3d6f8f" }}
                           onClick={handleAddColumn}
                         >
                           <Check />
@@ -325,11 +351,9 @@ export const Board = () => {
                     </Flex>
                   ) : (
                     <Button
-                      bg="#284b63" // Green button background
-                      color="white" // Light text color
-                      _hover={{
-                        bg: "#3d6f8f", // Hover effect for green button
-                      }}
+                      bg="#284b63"
+                      color="white"
+                      _hover={{ bg: "#3d6f8f" }}
                       onClick={() => setAddingNewColumn(true)}
                       minWidth={minColumnWidth}
                     >
@@ -366,17 +390,13 @@ export const Board = () => {
               _hover={{ bg: "#3d6f8f" }}
               onClick={() => {
                 setBoardData((draft) => {
-                  const newTasks = draft[
-                    columnOrder.find((column) =>
-                      draft[column].some(
-                        (task) => task.id === selectedEditCard.id
-                      )
-                    )
-                  ];
-                  const taskIndex = newTasks.findIndex(
-                    (task) => task.id === selectedEditCard.id
+                  const column = columnOrder.find((col) =>
+                    draft[col].some((task) => task.id === selectedEditCard.id)
                   );
-                  newTasks[taskIndex] = selectedEditCard;
+                  const newTasks = draft[column].map((task) =>
+                    task.id === selectedEditCard.id ? selectedEditCard : task
+                  );
+                  draft[column] = newTasks;
                 });
                 onClose();
               }}
@@ -389,4 +409,3 @@ export const Board = () => {
     </Container>
   );
 };
-
